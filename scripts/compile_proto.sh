@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SCHEMA_DIRECTORY=proto
-OUTPUT_DIRECTORY=internal/proto
+OUTPUT_DIRECTORY=${PWD}/internal/proto
 
 FILES=$(find ${SCHEMA_DIRECTORY} -name *.proto | xargs)
 

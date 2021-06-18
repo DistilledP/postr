@@ -13,9 +13,7 @@ run-test:
 	go test ./...
 
 update-proto: build-app clean-proto
-	@-docker run -v ${PWD}:/app --name proto_compile ${IMAGE_NAME} /app/scripts/compile_proto.sh
-	@-docker cp proto_compile:/app/internal/proto ./
-	@docker rm -f proto_compile
+	@-docker run --rm -v ${PWD}:/app --name proto_compile ${IMAGE_NAME} /app/scripts/compile_proto.sh
 	@make prune
 
 clean-proto:
