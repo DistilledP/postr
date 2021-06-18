@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+option go_package = "github.com/DistilledP/postr/internal/proto";
+
+message Bar {}
+
+message Baz {
+  optional Bar foo = 1;
+}
