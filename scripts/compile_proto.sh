@@ -18,4 +18,6 @@ fi;
 protoc --proto_path=${SCHEMA_DIRECTORY} \
        --go_out=${OUTPUT_DIRECTORY} \
        --go_opt=paths=source_relative \
+       --go-grpc_out=${OUTPUT_DIRECTORY} \
+       --go-grpc_opt=paths=source_relative \
        ${SCHEMA_FILES}
