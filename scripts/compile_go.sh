@@ -10,6 +10,10 @@ fi
 
 go mod vendor
 
+echo "Running unit tests\n"
+make run-test
+echo ""
+
 for app in $(ls -d cmd/*); do
     appName=$(echo ${app} | grep -oE "[^/]+$")
     echo "Compiling app: ${appName} ..."
