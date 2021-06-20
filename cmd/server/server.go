@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/DistilledP/postr/internal/middleware"
 	pb "github.com/DistilledP/postr/internal/proto"
 )
 
@@ -18,9 +19,8 @@ func (s Server) Upload(_ context.Context, upload *pb.ImageUpload) (*pb.ImageUplo
 	log.Println(upload.Name)
 
 	return &pb.ImageUploadResponse{
-		Status:       pb.Status_SUCCESS,
-		SizeInBytes:  1000,
-		ErrorMessage: "hey",
+		Status:      pb.Status_SUCCESS,
+		SizeInBytes: 1000,
 	}, nil
 }
 
@@ -35,6 +35,9 @@ func main() {
 	}
 
 	var opts []grpc.ServerOption
+
+	opts = append(opts, grpc.ChainUnaryInterceptor(middleware.UnaryServerMiddleware...))
+
 	grpcServer := grpc.NewServer(opts...)
 	pb.RegisterPostrServer(grpcServer, newServer())
 	grpcServer.Serve(sock)
