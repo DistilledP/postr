@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  postr:
+    image: postr:latest
+    ports:
+        - "3000:3000"
+        - "3001:3001"
+    env_file:
+        - .env
+    networks:
+        - dev-net
+
+networks:
+    dev-net:
