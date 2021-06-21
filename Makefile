@@ -10,6 +10,13 @@ build-app:
 	@make download-cmd
 	@make prune
 
+build-cli:
+	CGO_ENABLED=0 \
+		go build \
+		-ldflags "-s -w" \
+		-o ./bin/image-upload \
+		./cmd/image-upload/uploader.go
+
 download-cmd:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
 	@if [ -f ./bin/image-upload ]; then rm ./bin/image-upload; fi

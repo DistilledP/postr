@@ -1,3 +1,5 @@
 **/vendor
 **/build/artifacts
 **/bin
+**/coverage.out
+**/test_files
