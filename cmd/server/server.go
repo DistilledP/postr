@@ -3,15 +3,21 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/DistilledP/postr/internal/server"
+	"github.com/DistilledP/postr/internal/util"
 )
 
 type fn func(...interface{})
 
+func init() {
+	util.GetImageDir() // Ensure the directory is created
+}
+
 func main() {
-	grpcAddr := server.GetAddress("GRPC_PORT", server.DefaultGRPCPort)
-	httpAddr := server.GetAddress("HTTP_PORT", server.DefaultHTTPPort)
+	grpcAddr := util.GetAddress("GRPC_PORT", server.DefaultGRPCPort)
+	httpAddr := util.GetAddress("HTTP_PORT", server.DefaultHTTPPort)
 
 	grpcServer := server.NewGRPCServer()
 	httpServer := server.NewHTTPServer(grpcServer)
@@ -21,12 +27,14 @@ func main() {
 		log.Fatal(err)
 	}
 	defer grpcSocket.Close()
+	log.Printf("GRPC server listening on tcp port %s", strings.TrimLeft(grpcAddr, ":"))
 
 	httpSocket, err := server.OpenConn(httpAddr, "tcp")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer httpSocket.Close()
+	log.Printf("HTTP server listening on tcp port %s", strings.TrimLeft(httpAddr, ":"))
 
 	go func(logger fn) {
 		if err := grpcServer.Serve(grpcSocket); err != nil {

@@ -2,9 +2,10 @@ package handler
 
 import (
 	"context"
-	"log"
 
+	"github.com/DistilledP/postr/internal/file"
 	pb "github.com/DistilledP/postr/internal/proto"
+	"github.com/DistilledP/postr/internal/util"
 )
 
 type GRPCHandler struct {
@@ -12,10 +13,18 @@ type GRPCHandler struct {
 }
 
 func (s GRPCHandler) Upload(_ context.Context, upload *pb.ImageUpload) (*pb.ImageUploadResponse, error) {
-	log.Println(upload.Name)
+	stats, err := file.SaveFile(util.GetImageDir(), upload)
+
+	if err != nil {
+		return &pb.ImageUploadResponse{
+			Status:       pb.Status_FAILED,
+			SizeInBytes:  0,
+			ErrorMessage: err.Error(),
+		}, nil
+	}
 
 	return &pb.ImageUploadResponse{
 		Status:      pb.Status_SUCCESS,
-		SizeInBytes: 1000,
+		SizeInBytes: stats.Size(),
 	}, nil
 }

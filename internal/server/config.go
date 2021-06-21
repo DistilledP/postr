@@ -3,22 +3,7 @@ package server
 import (
 	"fmt"
 	"net"
-	"os"
-	"strings"
 )
-
-func GetAddress(key, defaultValue string) string {
-	address := defaultValue
-	if envAddress := strings.TrimSpace(os.Getenv(key)); envAddress != "" {
-		address = envAddress
-	}
-
-	if !strings.Contains(address, ":") {
-		address = ":" + address
-	}
-
-	return address
-}
 
 func OpenConn(addr, proto string) (net.Listener, error) {
 	if proto == "" {
