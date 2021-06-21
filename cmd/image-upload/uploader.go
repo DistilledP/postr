@@ -8,30 +8,32 @@ import (
 	"google.golang.org/grpc"
 
 	pb "github.com/DistilledP/postr/internal/proto"
+	"github.com/DistilledP/postr/internal/server"
 )
 
 func main() {
-	var opts []grpc.DialOption
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	opts = append(opts, grpc.WithInsecure(), grpc.WithBlock())
+	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
 
-	conn, err := grpc.Dial(":3000", opts...)
+	grpcAddr := server.GetAddress("GRPC_PORT", server.DefaultGRPCPort)
+	conn, err := grpc.DialContext(ctx, grpcAddr, opts...)
 	if err != nil {
-		log.Fatal("Failed to dial :3000")
+		log.Fatalf("Failed to dial %s: %v", grpcAddr, err)
 	}
 	defer conn.Close()
 
 	client := pb.NewPostrClient(conn)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	upload := &pb.ImageUpload{
 		Name:     "test.cat",
 		FileType: pb.MimeType_GIF,
 		Payload:  []byte("")}
 
-	response, err := client.Upload(ctx, upload)
+	callOpts := []grpc.CallOption{}
+
+	response, err := client.Upload(ctx, upload, callOpts...)
 	if err != nil {
 		log.Fatalf("failed to upload: %v", err)
 	}

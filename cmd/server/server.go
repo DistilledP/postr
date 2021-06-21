@@ -1,44 +1,40 @@
 package main
 
 import (
-	"context"
+	"fmt"
 	"log"
-	"net"
 
-	"google.golang.org/grpc"
-
-	"github.com/DistilledP/postr/internal/middleware"
-	pb "github.com/DistilledP/postr/internal/proto"
+	"github.com/DistilledP/postr/internal/server"
 )
 
-type Server struct {
-	pb.UnimplementedPostrServer
-}
-
-func (s Server) Upload(_ context.Context, upload *pb.ImageUpload) (*pb.ImageUploadResponse, error) {
-	log.Println(upload.Name)
-
-	return &pb.ImageUploadResponse{
-		Status:      pb.Status_SUCCESS,
-		SizeInBytes: 1000,
-	}, nil
-}
-
-func newServer() *Server {
-	return &Server{}
-}
+type fn func(...interface{})
 
 func main() {
-	sock, err := net.Listen("tcp", ":3000")
+	grpcAddr := server.GetAddress("GRPC_PORT", server.DefaultGRPCPort)
+	httpAddr := server.GetAddress("HTTP_PORT", server.DefaultHTTPPort)
+
+	grpcServer := server.NewGRPCServer()
+	httpServer := server.NewHTTPServer(grpcServer)
+
+	grpcSocket, err := server.OpenConn(grpcAddr, "tcp")
 	if err != nil {
-		log.Fatalf("Failed to listen on port: 3000")
+		log.Fatal(err)
 	}
+	defer grpcSocket.Close()
 
-	var opts []grpc.ServerOption
+	httpSocket, err := server.OpenConn(httpAddr, "tcp")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer httpSocket.Close()
 
-	opts = append(opts, grpc.ChainUnaryInterceptor(middleware.UnaryServerMiddleware...))
+	go func(logger fn) {
+		if err := grpcServer.Serve(grpcSocket); err != nil {
+			logger(fmt.Errorf("failed to start grpc server: %v", err))
+		}
+	}(log.Fatal)
 
-	grpcServer := grpc.NewServer(opts...)
-	pb.RegisterPostrServer(grpcServer, newServer())
-	grpcServer.Serve(sock)
+	if err = httpServer.Serve(httpSocket); err != nil {
+		log.Fatal(fmt.Errorf("failed to start http server: %v", err))
+	}
 }
