@@ -23,7 +23,7 @@ run-fmt:
 	go fmt ./...
 
 run-test:
-	go test -cover -v ./...
+	go test -cover -v `go list ./... | grep -v github.com/DistilledP/postr/internal/proto`
 
 update-proto: build-app clean-proto
 	@-docker run --rm -v ${PWD}:/app --name proto_compile ${IMAGE_NAME} /app/scripts/compile_proto.sh
