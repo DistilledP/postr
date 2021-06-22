@@ -1,6 +1,7 @@
 # Postr - The picture posting service
 
 [![CodeQL](https://github.com/DistilledP/postr/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/DistilledP/postr/actions/workflows/codeql-analysis.yml)
+[![Go](https://github.com/DistilledP/postr/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/DistilledP/postr/actions/workflows/go.yml)
 
 ## Introduction
 
