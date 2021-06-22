@@ -1,15 +1,13 @@
-package file
+package util
 
 import (
 	"os"
 	"strings"
-
-	"github.com/DistilledP/postr/internal/util"
 )
 
 func FileName(filePath string) string {
 	fileParts := strings.Split(filePath, string(os.PathSeparator))
-	fileName, _ := util.StringSlicePop(fileParts)
+	fileName, _ := StringSlicePop(fileParts)
 
 	return fileName
 }
