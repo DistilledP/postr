@@ -17,6 +17,9 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
+    
+    - name: Build
+      run: /bin/bash ./scripts/compile_proto.sh
 
     - name: Test
       run: make run-test
