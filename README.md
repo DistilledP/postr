@@ -1,5 +1,7 @@
 # Postr - The picture posting service
 
+[![CodeQL](https://github.com/DistilledP/postr/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/DistilledP/postr/actions/workflows/codeql-analysis.yml)
+
 ## Introduction
 
 Postr is a small picture posting/hosting system, designed to be lightweight on resources.
