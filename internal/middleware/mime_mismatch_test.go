@@ -23,7 +23,7 @@ func (m *stubHandler) handler(ctx context.Context, req interface{}) (interface{}
 
 func TestMimeMismatchInterceptor(t *testing.T) {
 	testCases := []struct {
-		desc             string
+		name             string
 		req              interface{}
 		expectedResponse interface{}
 		handlerCalled    bool
@@ -61,25 +61,27 @@ func TestMimeMismatchInterceptor(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		ctx := context.Background()
-		serverInfo := &grpc.UnaryServerInfo{}
+		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.Background()
+			serverInfo := &grpc.UnaryServerInfo{}
 
-		mockHandler := new(stubHandler)
-		if tc.handlerCalled {
-			mockHandler.On("handler", ctx, tc.req).Return(tc.expectedResponse, nil)
-		}
+			mockHandler := new(stubHandler)
+			if tc.handlerCalled {
+				mockHandler.On("handler", ctx, tc.req).Return(tc.expectedResponse, nil)
+			}
 
-		resp, err := mimeMismatchInterceptor(ctx, tc.req, serverInfo, mockHandler.handler)
+			resp, err := mimeMismatchInterceptor(ctx, tc.req, serverInfo, mockHandler.handler)
 
-		assert.Nil(t, err)
+			assert.Nil(t, err)
 
-		assert.IsType(t, tc.expectedResponse, resp)
-		assert.Equal(t, tc.expectedResponse, resp)
+			assert.IsType(t, tc.expectedResponse, resp)
+			assert.Equal(t, tc.expectedResponse, resp)
 
-		if tc.handlerCalled {
-			mockHandler.AssertExpectations(t)
-		} else {
-			mockHandler.AssertNotCalled(t, "handler")
-		}
+			if tc.handlerCalled {
+				mockHandler.AssertExpectations(t)
+			} else {
+				mockHandler.AssertNotCalled(t, "handler")
+			}
+		})
 	}
 }

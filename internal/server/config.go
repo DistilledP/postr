@@ -12,7 +12,7 @@ func OpenConn(addr, proto string) (net.Listener, error) {
 
 	sock, err := net.Listen(proto, addr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to listen on %s for protocol %s: %v", addr, proto, err)
+		return nil, fmt.Errorf("failed to listen on %s for protocol %s", addr, proto)
 	}
 
 	return sock, nil

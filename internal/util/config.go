@@ -16,7 +16,7 @@ func GetImageDir() string {
 	}
 
 	if _, err := os.Stat(imageDir); os.IsNotExist(err) {
-		err = os.Mkdir(imageDir, 0644)
+		err = os.Mkdir(imageDir, 0700)
 		if err != nil {
 			log.Printf("Failed to make dir %s, %v - using %s\n", imageDir, err, DefaultImageDir)
 		}

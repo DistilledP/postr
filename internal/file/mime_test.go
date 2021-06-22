@@ -11,7 +11,7 @@ import (
 
 func TestMimeType(t *testing.T) {
 	testCases := []struct {
-		desc     string
+		name     string
 		data     []byte
 		expected pb.MimeType
 	}{
@@ -26,31 +26,36 @@ func TestMimeType(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		actual := MimeType(tc.data)
+		t.Run(tc.name, func(t *testing.T) {
+			actual := MimeType(tc.data)
 
-		assert.Equal(
-			t,
-			tc.expected,
-			actual,
-			fmt.Sprintf("test case %v failed: got %v, want %v", tc.desc, actual, tc.expected),
-		)
+			assert.Equal(
+				t,
+				tc.expected,
+				actual,
+				fmt.Sprintf("test case %v failed: got %v, want %v", tc.name, actual, tc.expected),
+			)
+		})
 	}
 }
 
 func TestIsAcceptedMimeType(t *testing.T) {
 	testCases := []struct {
+		name     string
 		testType pb.MimeType
 		expected bool
 	}{
-		{pb.MimeType_UNKNOWN, false},
-		{pb.MimeType_GIF, true},
-		{pb.MimeType_JPEG, true},
-		{pb.MimeType_PNG, true},
+		{"Unknown", pb.MimeType_UNKNOWN, false},
+		{"GIF", pb.MimeType_GIF, true},
+		{"JPEG", pb.MimeType_JPEG, true},
+		{"PNG", pb.MimeType_PNG, true},
 	}
 
 	for _, tc := range testCases {
-		actual := IsAcceptedType(tc.testType)
+		t.Run(tc.name, func(t *testing.T) {
+			actual := IsAcceptedType(tc.testType)
 
-		assert.Equal(t, tc.expected, actual)
+			assert.Equal(t, tc.expected, actual)
+		})
 	}
 }
