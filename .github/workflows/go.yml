@@ -19,7 +19,7 @@ jobs:
         go-version: 1.16
     
     - name: Build
-      run: /bin/bash ./scripts/compile_proto.sh
+      run: make update-proto
 
     - name: Test
-      run: /bin/bash ./scripts/compile_proto.sh && make run-test
+      run: make run-test
